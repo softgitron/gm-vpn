@@ -13,10 +13,12 @@ class Configuration:
         self.config = deploy_common.load_config()
         self.create_key()
         self.deploy_instance()
-        time.sleep(30)
+        # Give some time for instance to start up
+        time.sleep(60)
         self.get_interface()
         deploy_common.save_cofig("upload_config.json", self.config)
-        # self.start_instance_deploy()
+        self.start_instance_deploy()
+        print(f'Connect using address: {self.config["external_ip"]}')
 
     def create_key(self):
         execute("rm id_rsa id_rsa.pub")
@@ -32,7 +34,7 @@ instances create {self.config["instance_name"]}
 --subnet={self.config["network"]}-subnet
 --private-network-ip={self.config["interface_ip"]}
 --network-tier=PREMIUM
---metadata=startup-script=apt\ update\ &&\ apt-get\ -y\ install\ git\ screen,ssh-keys=vpn:{self.key}
+--metadata=startup-script=$'apt update && apt-get -y install git screen',ssh-keys=vpn:{self.key}
 --can-ip-forward
 --maintenance-policy=MIGRATE
 --service-account={self.config["service_account"]}

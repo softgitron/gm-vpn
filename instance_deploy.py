@@ -136,7 +136,7 @@ class Configuration:
         )
         execute("systemctl restart systemd-resolved")
         # Secret sauce to get this thing actually working on gcloud
-        # execute(f"iptables -t nat -A POSTROUTING -o br0 -j SNAT --to {interface_ip}")
+        execute(f"iptables -t nat -A POSTROUTING -o br0 -j SNAT --to {interface_ip}")
 
     def create_client_files(self):
         go_home_dir()
