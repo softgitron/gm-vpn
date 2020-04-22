@@ -1,0 +1,9 @@
+# No private files
+__pycache__/
+config.json
+Gcloud.txt
+id_rsa*
+Memos.txt
+REST.json
+results.txt
+upload_config.json

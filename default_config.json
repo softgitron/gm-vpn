@@ -1,0 +1,18 @@
+{
+  "project_name": "TO BE FILLED",
+  "zone": "europe-north1-b",
+  "machine": "f1-micro",
+  "network": "default",
+  "service_account": "TO BE FILLED",
+  "instance_name": "gm-vpn-instance",
+  "interface": "Filled automatically by deploy",
+  "interface_ip": "10.144.1.2",
+  "interface_gateway": "10.144.1.1",
+  "interface_netmask": "255.255.0.0",
+  "interface_broadcast": "10.144.255.255",
+  "vpn_start_ip": "10.144.2.3",
+  "vpn_end_ip": "10.144.2.254",
+  "external_ip": "Filled automatically by deploy",
+  "port": "443",
+  "names": ["user1", "user2", "user3"]
+}
