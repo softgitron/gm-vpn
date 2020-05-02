@@ -62,7 +62,8 @@ class Configuration:
         execute("cp /etc/openvpn/easy-rsa/pki/issued/server.crt /etc/openvpn/")
         execute("cp /etc/openvpn/easy-rsa/pki/ca.crt /etc/openvpn/")
         execute("cp /etc/openvpn/easy-rsa/pki/private/server.key /etc/openvpn/")
-        execute("cp /etc/openvpn/easy-rsa/pki/dh.pem /etc/openvpn/")
+        # execute("cp /etc/openvpn/easy-rsa/pki/dh.pem /etc/openvpn/")
+        execute("openssl dhparam -dsaparam -out /etc/openvpn/easy-rsa/pki/dh.pem 2048")
         for name in self.config["names"]:
             execute(f"cp /etc/openvpn/easy-rsa/pki/private/{name}.key /etc/openvpn/")
             execute(f"cp /etc/openvpn/easy-rsa/pki/issued/{name}.crt /etc/openvpn/")
@@ -76,6 +77,8 @@ class Configuration:
         chdir("/etc/openvpn")
         openvpn_config = self.load_openvpn_config("/etc/openvpn/server.conf")
         openvpn_config["proto"] = "tcp"
+        # Should fix anoying packet dropping
+        openvpn_config["tcp-queue-limit"] = "256"
         openvpn_config["dev"] = "tap0"
         openvpn_config["ca"] = "ca.crt"
         openvpn_config["cert"] = "server.crt"
@@ -129,14 +132,27 @@ class Configuration:
         execute(
             f"ip route add default via {interface_gateway} dev br0 proto dhcp src {interface_ip}"
         )
-        execute('echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf')
-        execute("sysctl -p /etc/sysctl.conf")
+        self.configure_sysctl()
         execute(
             'echo "DNS=8.8.8.8\nFallbackDNS=1.1.1.1\n" >> /etc/systemd/resolved.conf'
         )
         execute("systemctl restart systemd-resolved")
         # Secret sauce to get this thing actually working on gcloud
         execute(f"iptables -t nat -A POSTROUTING -o br0 -j SNAT --to {interface_ip}")
+
+    def configure_sysctl(self):
+        # Enable traffic forwarding
+        execute('echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf')
+        # https://www.cyberciti.biz/faq/linux-tcp-tuning/
+        # Fix tcp buffer issues
+        # Set max buffer size to 12MiB. This is propably bit too large
+        execute("echo 'net.core.wmem_max=12582912' >> /etc/sysctl.conf")
+        execute("echo 'net.core.rmem_max=12582912' >> /etc/sysctl.conf")
+        execute("echo 'net.ipv4.tcp_rmem= 10240 87380 12582912' >> /etc/sysctl.conf")
+        execute("echo 'net.ipv4.tcp_wmem= 10240 87380 12582912' >> /etc/sysctl.conf")
+        execute("echo 'net.core.netdev_max_backlog = 5000' >> /etc/sysctl.conf")
+        execute("sysctl -p /etc/sysctl.conf")
+        execute(f"ip link set {self.config['interface']} txqueuelen 5000")
 
     def create_client_files(self):
         go_home_dir()

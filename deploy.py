@@ -14,11 +14,12 @@ class Configuration:
         self.create_key()
         self.deploy_instance()
         # Give some time for instance to start up
-        time.sleep(60)
+        print("Waiting 90 seconds to make sure that instance comes up.")
+        time.sleep(90)
         self.get_interface()
         deploy_common.save_cofig("upload_config.json", self.config)
         self.start_instance_deploy()
-        print(f'Connect using address: {self.config["external_ip"]}')
+        print(f'Input address: {self.config["external_ip"]} to web browser')
 
     def create_key(self):
         execute("rm id_rsa id_rsa.pub")
