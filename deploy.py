@@ -19,7 +19,8 @@ class Configuration:
         self.get_interface()
         deploy_common.save_cofig("upload_config.json", self.config)
         self.start_instance_deploy()
-        print(f'Input address: {self.config["external_ip"]} to web browser')
+        print("Please wait about 5 minutes to VPN come online.")
+        print(f'Then input address: {self.config["external_ip"]} to web browser')
 
     def create_key(self):
         execute("rm id_rsa id_rsa.pub")

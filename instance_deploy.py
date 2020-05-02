@@ -47,7 +47,8 @@ class Configuration:
         # Initialize keys
         chdir("/etc/openvpn/easy-rsa")
         execute("./easyrsa init-pki")
-        execute("./easyrsa gen-dh")
+        # execute("./easyrsa gen-dh")
+        execute("openssl dhparam -dsaparam -out /etc/openvpn/easy-rsa/pki/dh.pem 2048")
         execute("echo " " | ./easyrsa gen-req server nopass")
         execute('echo "" | ./easyrsa build-ca nopass')
         execute('echo "yes" | ./easyrsa sign-req server server')
@@ -62,8 +63,7 @@ class Configuration:
         execute("cp /etc/openvpn/easy-rsa/pki/issued/server.crt /etc/openvpn/")
         execute("cp /etc/openvpn/easy-rsa/pki/ca.crt /etc/openvpn/")
         execute("cp /etc/openvpn/easy-rsa/pki/private/server.key /etc/openvpn/")
-        # execute("cp /etc/openvpn/easy-rsa/pki/dh.pem /etc/openvpn/")
-        execute("openssl dhparam -dsaparam -out /etc/openvpn/easy-rsa/pki/dh.pem 2048")
+        execute("cp /etc/openvpn/easy-rsa/pki/dh.pem /etc/openvpn/")
         for name in self.config["names"]:
             execute(f"cp /etc/openvpn/easy-rsa/pki/private/{name}.key /etc/openvpn/")
             execute(f"cp /etc/openvpn/easy-rsa/pki/issued/{name}.crt /etc/openvpn/")
