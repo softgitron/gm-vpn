@@ -97,12 +97,9 @@ class Configuration:
         openvpn_config["auth"] = "SHA256"
         del openvpn_config["explicit-exit-notify"]
         del openvpn_config["tls-auth"]
-        openvpn_config[
-            "push1"
-        ] = f'"redirect-gateway {self.config["interface_gateway"]}"'
-        openvpn_config["push2"] = f'"route-gateway {self.config["interface_gateway"]}"'
-        openvpn_config["push3"] = '"dhcp-option DNS 8.8.8.8"'
-        openvpn_config["push4"] = '"dhcp-option DNS 8.8.4.4"'
+        openvpn_config["push1"] = f'"route-gateway {self.config["interface_gateway"]}"'
+        openvpn_config["push2"] = '"dhcp-option DNS 8.8.8.8"'
+        openvpn_config["push3"] = '"dhcp-option DNS 8.8.4.4"'
         openvpn_config[
             "push5"
         ] = f'"route 0.0.0.0 0.0.0.0 {self.config["interface_gateway"]}"'
@@ -167,7 +164,8 @@ class Configuration:
         client_config["redirect-gateway"] = "autolocal"
         client_config["route-metric"] = "1"
         client_config["cipher"] = "AES-256-CBC"
-        client_config["auth"] = "SHA1"
+        client_config["auth"] = "SHA256"
+        client_config["auth-nocache"] = ""
         del client_config["tls-auth"]
         del client_config["ca"]
         del client_config["cert"]

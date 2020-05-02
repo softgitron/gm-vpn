@@ -14,12 +14,12 @@ class Configuration:
         self.create_key()
         self.deploy_instance()
         # Give some time for instance to start up
-        print("Waiting 90 seconds to make sure that instance comes up.")
+        print("Waiting 90 seconds to make sure that instance is ready.")
         time.sleep(90)
         self.get_interface()
         deploy_common.save_cofig("upload_config.json", self.config)
         self.start_instance_deploy()
-        print("Please wait about 5 minutes to VPN come online.")
+        print("Please wait about 1 minutes to VPN come online.")
         print(f'Then input address: {self.config["external_ip"]} to web browser')
 
     def create_key(self):
