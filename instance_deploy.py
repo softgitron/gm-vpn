@@ -79,6 +79,7 @@ class Configuration:
         openvpn_config["proto"] = "tcp"
         # Should fix anoying packet dropping
         openvpn_config["tcp-queue-limit"] = "256"
+        openvpn_config["bcast-buffers"] = "1024"
         openvpn_config["dev"] = "tap0"
         openvpn_config["ca"] = "ca.crt"
         openvpn_config["cert"] = "server.crt"
